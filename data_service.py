@@ -1,106 +1,64 @@
-""" модуль для доступу до вхідних даних та перегляду даних
-"""
+def get_dovidnik():
+    with open("./data/dovidnik.txt", encoding='utf-8') as dovidnik_file: # encoding='utf-8' - нужно чтобы коректно отображать руские буквы, а не символы непонятные
+        from_dovidnik = dovidnik_file.readlines()
 
+    dovidnik_list = [] 
 
-
-def get_dovidnuk():
-    """ отримує данні по товарам
-
-    Returns:
-        dovidnuk_list : список товарів
-    """
-
-    from_file = [
-        "1;Масло",
-        "2;Сир твердий",
-        "3;Молоко",
-        "4;Сир",
-        "5;Маргарин",
-        "6;М'ясо",
-        "7;Ковбаса",
-        "8;Фарш м'ясний",
-        "9;М`ясо кістки",
-    ]
-
-    #накопичувач рядків
-    dovidnuk_list = []
-
-    for line in from_file:
+    for line in from_dovidnik:
         line_list = line.split(';')
-        dovidnuk_list.append(line_list)
-    return dovidnuk_list
+        dovidnik_list.append(line_list)
+      
+      
+    return dovidnik_list
 
-def get_pokazn():
-    """повертає список накладних
+def get_prices():
+    with open("./data/prices.txt", encoding='utf-8') as prices_file:
+        from_prices = prices_file.readlines()
 
-    Returns:
-        from_file: список накладних
-    """
+    prices_list = [] 
 
-    from_file = [
-        "1;1;23.54;64.56;72.52",
-        "2;2;11.72;21.45;21.1",
-        "1;3;57.54;87.35;95.59",
-        "2;4;31.26;41.26;61.1",
-        "1;5;42.48;32.78;52.56",
-        "2;6;25.56;65.15;95.96",
-        "2;7;31.1;65.86;87.85",
-        "1;8;24.25;75.7;79.84",
-        "1;9;9.45;21.15;23.62",
-        "3;1;15.77;43.26;48.59",
-        "3;2;7.85;14.37;14.14",
-        "3;3;38.55;58.52;64.05",
-        "3;4;20.94;27.64;40.94",
-        "3;5;28.46;21.96;35.22",
-        "3;6;17.13;43.65;64.29",
-        "3;7;20.84;44.13;58.86",
-        "3;8;16.25;50.72;53.49",
-        "3;9;6.33;14.17;15.83",
-    ]
-
-    # розбити строку на реквізити та перетворити формати (при потребі)
-    pokazn_list = []    # список-накопичувач
-    for line in from_file:
+    for line in from_prices:
         line_list = line.split(';')
-        line_list[2] = float(line_list[2])
-        line_list[3] = float(line_list[3])
-        line_list[4] = float(line_list[4])
-        pokazn_list.append(line_list)
+        prices_list.append(line_list)
+      
+    return prices_list
 
-    return pokazn_list
+def show_dovidnik(dovidnik):
+    dovidnik_code_from = input("З якого коду товарів?")
+    dovidnik_code_to = input("По який код товарів?")
 
-def show_dovidnuk(dovidnuk):
-    """виводить список товарів за заданої умови
+    kol_lines = 0
 
-    Args:
-        dovidnuk : сприсок товарів
-    """
+    for cod in dovidnik:
+        if dovidnik_code_from <= cod[0] <= dovidnik_code_to:
+            print("Код: {:8} Назва:{:20} Одиниця виміру:{:4}".format(cod[0], cod[1], cod[2].rstrip()))
+            kol_lines = kol_lines + 1
 
-    dovidnuk_code_from = input("З якого кода товара?")
-    dovidnuk_code_to   = input("По який код товара?")
-    
-    for dovidnuk in dovidnuk():
-        if  dovidnuk_code_from  <= dovidnuk[0] <= dovidnuk_code_to:
-            print( "код товару: {:4} назва товару: {:18} ".format(dovidnuk[0], dovidnuk[1] ))
+    if kol_lines == 0:
+        print("Записів з кодом від {} до {} не знайдено".format(dovidnik_code_from, dovidnik_code_to))
 
-def show_pokazn(pokazn):
-    """виводить список товарів за заданої умови
+def show_prices(prices):
+    prices_code_from = input("З якого коду товарів?")
+    prices_code_to = input("По який код товарів?")
 
-    Args:
-        pokazn : сприсок товарів
-    """
+    kol_lines = 0
 
-    pokazn_code_from = input("З якого склада товара?")
-    pokazn_code_to   = input("По який склад товара?")
-    
-    for pokazn in pokazn():
-        if  pokazn_code_from  <= pokazn[0] <= pokazn_code_to:
-            print("номер складу: {:4} код товару: {:10} залишок: {16} прибуток: {22} вибуток: {28}}").format(pokazn[0], pokazn[1], pokazn[2] ,pokazn[3] ,pokazn[4] )
+    for cod in prices:
+        if prices_code_from <= cod[0] <= prices_code_to:
+            print("Код:{:7} Ціна:{:8} Найменування ринку:{:6}".format(cod[0], cod[1], cod[2], cod[3].rstrip()))
+            kol_lines = kol_lines + 1
 
-dovidnuk = get_dovidnuk()
-for o in dovidnuk:
-    print(o)
+    if kol_lines == 0:
+        print("Записів з кодом від {} до {} не знайдено".format(prices_code_from, prices_code_to))
 
-pokazn = get_pokazn()
-for l in pokazn:
-    print(l)
+
+
+# what_show = int(input("Показати: 1 - довідник; 2 - ціна? (1/2)"))
+# if what_show == 1:
+#dovidnik = get_dovidnik()
+#show_dovidnik(dovidnik)   
+# elif what_show == 2:
+#prices = get_prices()
+#show_prices(prices)
+# else:
+#    print("Введіть '1' або '2'!")  
